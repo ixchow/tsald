@@ -1,9 +1,22 @@
 {
-  "name" : "sald-cli",
-  "description" : "16-465 game engine build implementation",
-  "version" : "0.0.1",
-  "author" : "Jacob Slone",
+  "name" : "tsald-cli",
+  "description" : "tchow version of the 16-465 game engine build implementation",
+  "version" : "0.1.0",
+  "author" : "Jim McCann <ix@tchow.com>",
+  "contributors" : [
+  	"Jacob Slone",
+	"Andrew Sweet",
+	"Jonatrhan Leung",
+	"Gabriel Burgess",
+	"Rishit Bhatia",
+	"Sudhanshu Aggarwal",
+	"Prajwal Manjunath",
+	"Savitra Sapre",
+	"Theodore Lee",
+	"Jimit Bhalani",
+	"Akshay Ramesh"
+  ],
   "bin" : {
-    "sald" : "bin/sald.js"
+    "tsald" : "bin/tsald.js"
   }
 }

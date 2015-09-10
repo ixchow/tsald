@@ -1,6 +1,23 @@
-#sald
+#Tsald
+The [tchow](http://tchow.com) fork of [sald](https://github.com/ixchow/sald).
+Basically, I wanted to clean up some of the internals and default transformations, but felt that removing functionality from the original sald wasn't particularly nice.
+
+##Idea
+Tsald is designed to pack a bunch of assets -- javascript, images, sounds, shaders, and so on -- into a single, easy-to-distribute, .html file.
+To do this, it builds on node's `require()` mechanism.
+
+In tsald projects, you can still write `file = require("file.js")` to get access to whatever `file.js` exports; however,
+you can also do say `image = require("something.jpeg")` to load an image,
+or even -- if you define the right functions -- write things like `model = require("tank.blend")` to load 3D models.
+
+This is made possible through the magic of transforms -- functions that (given a string), return javascript code representing that string's data.
+For instance, when tsald sees `require("something.js")` it calls the ".js" transform which simply reads the file from disk and returns its contents.
+
+The partner of the tsald transform is the canonicalizer.
+Canonicalizers are functions that -- given a string and a caller -- provide a canonical representation (a string) for a `require`'d resource. (The caller is sometimes important for relative path resolution.)
+
 ##Installation
-Fork this repo into desired location then from command line run
+Clone this repo into desired location then from command line run
 ```
 npm link
 ```
@@ -9,20 +26,17 @@ run as administrator on Windows.
 
 Note: The current version of node.js for windows has a bug. If you receive an
 ENOENT error, check [here](http://stackoverflow.com/questions/25093276/node-js-windows-error-enoent-stat-c-users-rt-appdata-roaming-npm)
-##
+
 ##Usage
 ```
-sald [command] args
-  commands
-    new/create [dir] - create a new sald project
-    build - build sald project in cwd based on build.js
+tsald build
+    builds tsald project in cwd based on build.js
 ```
-You will want to use `sald create myProjName` to create a starter project. It is not
-recommended to do this in the sald directory.
+
 ##build.js
-The build.js file must be in the current working directory when calling sald build.
-This file should export an object which specifies the output location, entry point, and the method for handling custom file types.
-By default, Sald handles transformations for common types, like `.js`, `.json`, `.png`, `.jpg`, `.wav`, `.ogg`. You may override these with your own handlers if you wish. All other filetypes will need a handler implemented in this `build.js`.
+The build.js file must be in the current working directory when calling `tsald`.
+This file should export an object which specifies the output location, entry point, and methods for handling custom file types.
+By default, Tsald handles transformations for common types, like `.js`, `.json`, `.png`, `.jpg`, `.wav`, `.ogg`. You may override these with your own handlers if you wish. All other filetypes will need a handler implemented in this `build.js`.
 
 Sald can also handle `colon`ical transforms, specified like `gradient:#000-#fff`, for which you must specify a function which generates a JS block that exports the expected return value.
 
@@ -55,16 +69,12 @@ function unownLoader(filepath) {
 
 // Export build options
 module.exports = {
-  // Entry point for build
-  entry :  {
-    js : 'src/main.js',       //the script to be called
-    html : 'src/main.html'    //will be used as template for final output
-  },
-  // Output options
-  output : {
-    html : 'build.html'  //location to output final built project
-  },
-  // Options for each file type
+  // Input options:
+  js : 'src/main.js',       //execution will effectively start with 'require("src/main.js")'
+  html : 'src/main.html',   //<scripts/> tag will be replaced with final output
+  // Output options:
+  output : 'build.html', //final build project
+  // Custom transforms:
   transforms : {
     'gradient:': {
       canonicalFunc: gradientCanon,
@@ -84,7 +94,3 @@ This build.js file now knows what to do with a `require('../pokedex/pokemon87.un
 ##Libraries
 
 - [mainloop.js](sald/mainloop.js) [docs](docs/mainloop.md) provides a basic mainloop.
-- [benchmark.js](sald/benchmark.js) [docs](docs/benchmark.md) contains utility functions for benchmarking.
-- [collide.js](sald/collide.js) [docs](docs/collide.md) contains collision checking functions.
-- [Sprite.js](sald/Sprite.js) [docs](docs/Sprite.md) is a class that wraps spritesheets and makes it easy to select frames and animations.
-- [Tilemap.js](sald/Tilemap.js) [docs](docs/Tilemap.md) is a class that wraps maps made of image tiles.
