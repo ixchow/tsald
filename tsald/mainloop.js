@@ -1,14 +1,14 @@
-if (typeof(window.sald) === "undefined") {
-	window.sald = {};
+if (typeof(window.ts) === "undefined") {
+	window.ts = {};
 }
 
 //Just 'require'-ing this file installs several useful global properties:
-window.sald.scene = {}; //the current scene; update, draw, scrollWheel,  and key functions will be called.
-window.sald.ctx = null; //the drawing context, call canvas 2d functions here
-window.sald.size = {x:320, y:240, mode:"exact"}; //set your desired size here
-window.sald.keys = {}; //all keys currently held down (named by strings below)
-window.sald.mouse = null; //mouse information {x:, y:, buttons:}
-window.sald.takeRightClickInput = true; //should right mouse button trigger events?
+window.ts.scene = {}; //the current scene; update, draw, scrollWheel,  and key functions will be called.
+window.ts.ctx = null; //the drawing context, call canvas 2d functions here
+window.ts.size = {x:320, y:240, mode:"exact"}; //set your desired size here
+window.ts.keys = {}; //all keys currently held down (named by strings below)
+window.ts.mouse = null; //mouse information {x:, y:, buttons:}
+window.ts.takeRightClickInput = true; //should right mouse button trigger events?
 
 var keyNameToCode = {
 	"BACKSPACE": 8,
@@ -145,20 +145,20 @@ function start(canvas, options) {
 		options = {};
 	}
 	
-	var sald = window.sald; //redundant, probably
+	var sald = window.ts; //redundant, probably
 
 	//------------ create context --------------
 
 	if (options.gl) {
-		window.sald.gl = canvas.getContext('webgl', options.gl) || canvas.getContext("experimental-webgl", options.gl);
+		window.ts.gl = canvas.getContext('webgl', options.gl) || canvas.getContext("experimental-webgl", options.gl);
 	} else {
-		window.sald.ctx = canvas.getContext('2d');
+		window.ts.ctx = canvas.getContext('2d');
 	}
 
 	//----------- handle init --------------
 	//  (used by meshes and shaders that require a gl context to load)
-	if (window.sald.initFuncs) {
-		window.sald.initFuncs.forEach(function(f){ f(); });
+	if (window.ts.initFuncs) {
+		window.ts.initFuncs.forEach(function(f){ f(); });
 	}
 
 	//------------ handle canvas sizing --------------
@@ -169,6 +169,7 @@ function start(canvas, options) {
 		var parent = canvas.parentNode;
 		var parentStyle = getComputedStyle(parent);
 		var maxSize = {width:parent.clientWidth, height:parent.clientHeight};
+
 		maxSize.width -= parseInt(parentStyle.getPropertyValue("padding-left")) + parseInt(parentStyle.getPropertyValue("padding-right"));
 		maxSize.height -= parseInt(parentStyle.getPropertyValue("padding-top")) + parseInt(parentStyle.getPropertyValue("padding-bottom"));
 
@@ -290,7 +291,7 @@ function start(canvas, options) {
 	
 	// suppress context menu on right click:
 	window.addEventListener('contextmenu', function(evt) {
-		if (window.sald.takeRightClickInput){
+		if (window.ts.takeRightClickInput){
 	    	evt.preventDefault();
 			return false;
 		}
@@ -307,7 +308,7 @@ function start(canvas, options) {
 
 		var buttons = {};
 		for (var name in buttonNameToCode) {
-			if (name === "RIGHT" && !window.sald.takeRightClickInput) {
+			if (name === "RIGHT" && !window.ts.takeRightClickInput) {
 				//skip right button, if flag isn't set
 			} else {
 				if (evt.buttons & (1 << buttonNameToCode[name])) {
@@ -316,7 +317,7 @@ function start(canvas, options) {
 			}
 		}
 
-		window.sald.mouse = {x:x, y:y, buttons:buttons};
+		window.ts.mouse = {x:x, y:y, buttons:buttons};
 	}
 
 	window.addEventListener('mousedown', function(evt) {
@@ -330,7 +331,7 @@ function start(canvas, options) {
 		}
 
 		//if this is a right click, and we're not set to handle those, don't handle it:
-		if (buttonName === "RIGHT" && !window.sald.takeRightClickInput){
+		if (buttonName === "RIGHT" && !window.ts.takeRightClickInput){
 			return;
 		}
 
@@ -352,7 +353,7 @@ function start(canvas, options) {
 		}
 
 		//if this is a right click, and we're not set to handle those, don't handle it:
-		if (buttonName === "RIGHT" && !window.sald.takeRightClickInput){
+		if (buttonName === "RIGHT" && !window.ts.takeRightClickInput){
 			return;
 		}
 
